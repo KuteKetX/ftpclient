@@ -1,5 +1,6 @@
 import os
 import sys
+import socket
 import ftplib
 from time import sleep
 
@@ -39,15 +40,26 @@ def IsValidIP(Address):
 			return False
 	return True
 
-def main(host):
+def IsIPAddress(String):
+	try:
+	    socket.inet_aton(String)
+	    return True
+	except socket.error:
+	    return False
+
+def main(Host):
 	sleep(1)
-	FTPServer = ftplib.FTP(host)
+	FTPServer = ftplib.FTP(Host)
 	print ""
 	print FTPServer.getwelcome()
 	print FTPServer.login()
 	print ""
+	if IsIPAddress(Host) == True:
+		HostPrompt = socket.getfqdn(Host)
+	else:
+		HostPrompt = Host
 	while True:
-		FTPInput = str(raw_input('\033[91m[\033[93m' + host + '\033[91m][\033[93m' + FTPServer.pwd() + '\033[91m]::\033[93m$ \033[0m'))
+		FTPInput = str(raw_input('\033[91m[\033[93m' + HostPrompt + '\033[91m][\033[93m' + FTPServer.pwd() + '\033[91m]::\033[93m$ \033[0m'))
 		if FTPInput == "":
 			pass
 		elif "ls" in FTPInput:
