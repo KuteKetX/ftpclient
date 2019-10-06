@@ -27,16 +27,13 @@ def PrintError(Msg):
 	else:
 		print '\033[1;31m[!]\033[1;m ' + Msg
 
-def NewLine():
-	return ""
-
 def main(host):
 	sleep(1)
 	FTPServer = ftplib.FTP(host)
-	print NewLine()
+	print ""
 	print FTPServer.getwelcome()
 	print FTPServer.login()
-	print NewLine()
+	print ""
 	while True:
 		FTPInput = str(raw_input('\033[91m[\033[93m' + host + '\033[91m][\033[93m' + FTPServer.pwd() + '\033[91m]::\033[93m$ \033[0m'))
 		if FTPInput == "":
@@ -73,14 +70,6 @@ def main(host):
 		elif "retr" in FTPInput:
 			Command, Filename = FTPInput.split(" ")
 			FTPServer.retrbinary('RETR ' + Filename, open(Filename, 'wb').write)
-		elif FTPInput == "scp *":
-			Filenames = FTPServer.nlst() # get filenames within the directory
-			print Filenames
-			for Filename in Filenames:
-				LocalFilename = os.path.join('C:\\' + host + '\\', Filename)
-				File = open(LocalFilename, 'wb')
-				FTPServer.retrbinary('RETR '+ Filename, File.write)
-				File.close()
 		else:
 			PrintError("\"" + FTPInput + "\": Command Not Found!")
 
