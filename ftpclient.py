@@ -47,13 +47,16 @@ def IsIPAddress(String):
 	except socket.error:
 	    return False
 
+def ReadFile(File):
+	print File
+
 def main(Host):
 	sleep(1)
 	FTPServer = ftplib.FTP(Host)
-	print ""
-	print FTPServer.getwelcome()
-	print FTPServer.login()
-	print ""
+	print "\n" + FTPServer.getwelcome() + "\n"
+	sleep(1)
+	if "230" in FTPServer.login():
+		PrintSuccess(FTPServer.login() + "\n")
 	if IsIPAddress(Host) == True:
 		HostPrompt = socket.getfqdn(Host)
 	else:
@@ -66,23 +69,25 @@ def main(Host):
 			try:
 				Command, Directory = FTPInput.split()
 				FTPServer.dir(Directory)
+				print ""
 			except ValueError:
 				FTPServer.dir()
+				print ""
 		elif "cd" in FTPInput:
 			Command, Directory = FTPInput.split()
 			try:
 				FTPServer.cwd(str(Directory))
 			except ftplib.error_perm:
-				PrintError("That isn't a directory retard.")
+				PrintError("That isn't a directory retard.\n")
 		elif "file" in FTPInput:
 			Command, File = FTPInput.split(" ")
 			print FTPServer.size(File)
 		elif FTPInput == "exit":
 			FTPServer.quit()
-			PrintStatus("Exiting...")
+			PrintStatus("Exiting...\n")
 			exit()
 		elif FTPInput == "getwelcome":
-			print FTPServer.getwelcome()
+			print "\n" + FTPServer.getwelcome() + "\n"
 		elif FTPInput == "clear":
 			os.system("clear")
 		elif "setdebuglevel" in FTPInput:
@@ -90,12 +95,19 @@ def main(Host):
 			try:
 				FTPServer.set_debuglevel(int(Level))
 			except ValueError:
-				PrintFailure("Argument must be an integer!")
+				PrintFailure("Argument must be an integer!\n")
 		elif "retr" in FTPInput:
 			Command, Filename = FTPInput.split(" ")
-			FTPServer.retrbinary('RETR ' + Filename, open(Filename, 'wb').write)
+			if FTPServer.retrbinary('RETR ' + Filename, open(Filename, 'wb').write) == "226 Transfer complete.":
+				PrintSuccess("226 Transfer complete.")
+		elif "cat" in FTPInput:
+			Command, Filename = FTPInput.split(" ")
+			try:
+				FTPServer.retrbinary('RETR ' + Filename, ReadFile)
+			except ftplib.error_perm:
+				PrintFailure("550 Failed to open file.\n")
 		else:
-			PrintError("\"" + FTPInput + "\": Command Not Found!")
+			PrintError("\"" + FTPInput + "\": Command Not Found!\n")
 
 if __name__ == '__main__':
 	try:
