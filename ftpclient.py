@@ -27,6 +27,18 @@ def PrintError(Msg):
 	else:
 		print '\033[1;31m[!]\033[1;m ' + Msg
 
+def IsValidIP(Address):
+	AddrChunks = Address.split('.')
+	if len(AddrChunks) != 4:
+		return False
+	for AddrChunk in AddrChunks:
+		if not AddrChunk.isdigit():
+			return False
+		Range = int(AddrChunk)
+		if Range < 0 or Range > 255:
+			return False
+	return True
+
 def main(host):
 	sleep(1)
 	FTPServer = ftplib.FTP(host)
