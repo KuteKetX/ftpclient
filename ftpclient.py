@@ -1,5 +1,7 @@
+import os
 import lib
 import sys
+import socket
 import ftplib
 import readline
 from time import sleep
@@ -12,9 +14,9 @@ def main(Host):
 	print "\n" + FTPServer.getwelcome() + "\n"
 	sleep(1)
 	LoginStatus = FTPServer.login()
-	if "230 Login Successful." in str(LoginStatus):
-		PrintSuccess("230 Login Successful.\n")
-	if IsIPAddress(Host) == True:
+	if "230" in str(LoginStatus):
+		lib.PrintSuccess("230 Login Successful.\n")
+	if lib.IsIPAddress(Host) == True:
 		HostPrompt = socket.getfqdn(Host)
 	else:
 		HostPrompt = Host
@@ -35,13 +37,13 @@ def main(Host):
 			try:
 				FTPServer.cwd(str(Directory))
 			except ftplib.error_perm:
-				PrintError("That isn't a directory retard.\n")
+				lib.PrintError("That isn't a directory retard.\n")
 		elif "file" in FTPInput:
 			Command, File = FTPInput.split(" ")
 			print FTPServer.size(File)
 		elif FTPInput == "exit":
 			FTPServer.quit()
-			PrintStatus("Exiting...\n")
+			lib.PrintStatus("Exiting...\n")
 			exit()
 		elif FTPInput == "getwelcome":
 			print "\n" + FTPServer.getwelcome() + "\n"
@@ -52,7 +54,7 @@ def main(Host):
 			try:
 				FTPServer.set_debuglevel(int(Level))
 			except ValueError:
-				PrintFailure("Argument must be an integer!\n")
+				lib.PrintFailure("Argument must be an integer!\n")
 		elif "retr" in FTPInput:
 			Command, Filename = FTPInput.split(" ")
 			if FTPServer.retrbinary('RETR ' + Filename, open(Filename, 'wb').write) == "226 Transfer complete.":
@@ -60,11 +62,11 @@ def main(Host):
 		elif "cat" in FTPInput:
 			Command, Filename = FTPInput.split(" ")
 			try:
-				FTPServer.retrbinary('RETR ' + Filename, ReadFile)
+				FTPServer.retrbinary('RETR ' + Filename, lib.ReadFile)
 			except ftplib.error_perm:
-				PrintFailure("550 Failed to open file.\n")
+				lib.PrintFailure("550 Failed to open file.\n")
 		else:
-			PrintError("\"" + FTPInput + "\": Command Not Found!\n")
+			lib.PrintError("\"" + FTPInput + "\": Command Not Found!\n")
 
 if __name__ == '__main__':
 	try:
@@ -75,5 +77,5 @@ if __name__ == '__main__':
 		    pass
 		main(sys.argv[1])
 	except IndexError:
-		PrintFailure("Missing argument!")
-		PrintStatus("Usage: checkftpserver HOST")
+		lib.PrintFailure("Missing argument!")
+		lib.PrintStatus("Usage: checkftpserver HOST")
