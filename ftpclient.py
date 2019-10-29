@@ -65,6 +65,12 @@ def Main(Host):
 				FTPServer.retrbinary('RETR ' + Filename, lib.ReadFile)
 			except ftplib.error_perm:
 				lib.PrintFailure("550 Failed to open file.\n")
+		elif "ren" in FTPInput:
+			Command, Original, NewName = FTPInput.split(" ")
+			try:
+				FTPServer.rename(str(Original), str(NewName))
+			except ftplib.error_perm:
+				lib.PrintFailure("550 Failed to rename file.\n")
 		else:
 			lib.PrintError("\"" + FTPInput + "\": Command Not Found!\n")
 
