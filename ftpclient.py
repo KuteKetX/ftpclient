@@ -71,6 +71,12 @@ def Main(Host):
 				FTPServer.rename(str(Original), str(NewName))
 			except ftplib.error_perm:
 				lib.PrintFailure("550 Failed to rename file.\n")
+		elif "mkdir" in FTPInput:
+			Command, DirectoryName = FTPInput.split(" ")
+			try:
+				FTPServer.mkd(str(DirectoryName))
+			except ftplib.error_perm:
+				lib.PrintFailure("550 Failed to create directory.\n")
 		else:
 			lib.PrintError("\"" + FTPInput + "\": Command Not Found!\n")
 
