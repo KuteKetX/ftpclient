@@ -53,9 +53,6 @@ def IsIPAddress(String):
 def ReadFile(File):
 	print File
 
-def AddHistory(Command):
-	readline.add_history(str(Command))
-
 def main(Host):
 	sleep(1)
 	FTPServer = ftplib.FTP(Host)
