@@ -2,7 +2,10 @@ import os
 import sys
 import socket
 import ftplib
+import readline
 from time import sleep
+
+HistoryFile = os.path.join(os.path.expanduser("~"), ".ftphistory")
 
 def PrintSuccess(Msg):
 	if os.name == 'nt':
@@ -50,13 +53,17 @@ def IsIPAddress(String):
 def ReadFile(File):
 	print File
 
+def AddHistory(Command):
+	readline.add_history(str(Command))
+
 def main(Host):
 	sleep(1)
 	FTPServer = ftplib.FTP(Host)
 	print "\n" + FTPServer.getwelcome() + "\n"
 	sleep(1)
-	if "230" in FTPServer.login():
-		PrintSuccess(FTPServer.login() + "\n")
+	LoginStatus = FTPServer.login()
+	if "230 Login Successful." in str(LoginStatus):
+		PrintSuccess("230 Login Successful.\n")
 	if IsIPAddress(Host) == True:
 		HostPrompt = socket.getfqdn(Host)
 	else:
