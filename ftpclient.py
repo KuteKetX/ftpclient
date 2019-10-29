@@ -118,6 +118,11 @@ def main(Host):
 
 if __name__ == '__main__':
 	try:
+		try:
+		    readline.read_history_file(HistoryFile)
+		    readline.set_history_length(1000)
+		except IOError:
+		    pass
 		main(sys.argv[1])
 	except IndexError:
 		PrintFailure("Missing argument!")
