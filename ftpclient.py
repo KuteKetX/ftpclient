@@ -8,7 +8,7 @@ from time import sleep
 
 HistoryFile = os.path.join(os.path.expanduser("~"), ".ftphistory")
 
-def main(Host):
+def Main(Host):
 	sleep(1)
 	FTPServer = ftplib.FTP(Host)
 	print "\n" + FTPServer.getwelcome() + "\n"
@@ -75,7 +75,7 @@ if __name__ == '__main__':
 		    readline.set_history_length(1000)
 		except IOError:
 		    pass
-		main(sys.argv[1])
+		Main(sys.argv[1])
 	except IndexError:
 		lib.PrintFailure("Missing argument!")
-		lib.PrintStatus("Usage: checkftpserver HOST")
+		lib.PrintStatus("Usage: ftpclient HOST")
